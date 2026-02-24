@@ -1,0 +1,46 @@
+{
+  "thresholds": {
+    "hot": {
+      "min_score": 8,
+      "label": "HOT",
+      "action": "Notify sales team immediately"
+    },
+    "warm": {
+      "min_score": 5,
+      "label": "WARM",
+      "action": "Add to nurture sequence"
+    },
+    "cold": {
+      "min_score": 1,
+      "label": "COLD",
+      "action": "Log for future reference"
+    }
+  },
+  "weights": {
+    "budget_match": {
+      "weight": 3,
+      "description": "Has budget allocated and it matches your pricing"
+    },
+    "timeline_urgency": {
+      "weight": 2,
+      "description": "Needs a solution within 1-3 months"
+    },
+    "team_size_fit": {
+      "weight": 1,
+      "description": "Team size matches your target segment"
+    },
+    "pain_point_clarity": {
+      "weight": 2,
+      "description": "Can clearly articulate their problem"
+    },
+    "decision_authority": {
+      "weight": 2,
+      "description": "Is a decision maker or influencer"
+    }
+  },
+  "scoring_guide": {
+    "8-10": "Clear goal + concrete problem + budget + urgency = HOT",
+    "5-7": "Interest + some clarity + exploring options = WARM",
+    "1-4": "Just browsing + no budget + no timeline = COLD"
+  }
+}

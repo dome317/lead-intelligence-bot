@@ -1,0 +1,44 @@
+{
+  "questions": [
+    {
+      "id": "challenge",
+      "phase": "qualify",
+      "question": "What's your primary business challenge right now?",
+      "purpose": "Identify pain point and urgency",
+      "weight": 2
+    },
+    {
+      "id": "team_size",
+      "phase": "qualify",
+      "question": "How large is your team?",
+      "purpose": "Determine company size and fit",
+      "weight": 1
+    },
+    {
+      "id": "timeline",
+      "phase": "qualify",
+      "question": "What's your timeline for solving this?",
+      "purpose": "Gauge urgency and decision readiness",
+      "weight": 2
+    },
+    {
+      "id": "budget",
+      "phase": "qualify",
+      "question": "Do you have a budget allocated for this?",
+      "purpose": "Budget qualification",
+      "weight": 3
+    },
+    {
+      "id": "previous_solutions",
+      "phase": "qualify",
+      "question": "What solutions have you tried before?",
+      "purpose": "Understand experience and expectations",
+      "weight": 1
+    }
+  ],
+  "settings": {
+    "ask_one_at_a_time": true,
+    "embed_naturally": true,
+    "min_messages_before_extract": 8
+  }
+}

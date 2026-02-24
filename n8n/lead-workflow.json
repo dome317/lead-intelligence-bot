@@ -1,0 +1,160 @@
+{
+  "name": "Lead Intelligence Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "score-check",
+              "leftValue": "={{ $json.score }}",
+              "rightValue": 7,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "score-filter",
+      "name": "HOT/WARM Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SLACK_WEBHOOK_URL }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "=:fire: *New {{ $json.score_label }} Lead (Score: {{ $json.score }}/10)*\n\n*Name:* {{ $json.name || 'Not provided' }}\n*Email:* {{ $json.email || 'Not provided' }}\n*Goal:* {{ $json.goal }}\n*Obstacle:* {{ $json.obstacle }}\n*Readiness:* {{ $json.readiness }}\n\n*Summary:*\n{{ $json.conversation_summary }}\n\n_Source: Lead Intelligence Bot · {{ $json.timestamp }}_"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "slack-notify",
+      "name": "Slack Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [690, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.HUBSPOT_API_URL }}/crm/v3/objects/contacts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "hubspotApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"properties\": {\n    \"firstname\": \"{{ $json.name || 'Chatbot Lead' }}\",\n    \"email\": \"{{ $json.email || '' }}\",\n    \"lead_score\": \"{{ $json.score }}\",\n    \"lead_status\": \"{{ $json.score_label }}\",\n    \"notes_last_contacted\": \"{{ $json.conversation_summary }}\",\n    \"hs_lead_status\": \"NEW\"\n  }\n}",
+        "options": {}
+      },
+      "id": "hubspot-create",
+      "name": "HubSpot Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [690, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, lead_id: $json.id || 'processed', score: $json.score, label: $json.score_label }) }}",
+        "options": {}
+      },
+      "id": "webhook-response",
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [910, 300]
+    }
+  ],
+  "connections": {
+    "Lead Webhook": {
+      "main": [
+        [
+          {
+            "node": "HOT/WARM Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HOT/WARM Filter": {
+      "main": [
+        [
+          {
+            "node": "Slack Notification",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HubSpot Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Notification": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HubSpot Contact": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "lead-intelligence-bot"
+  },
+  "tags": [
+    {
+      "name": "Lead Intelligence"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "crm": {
+    "url": "",
+    "provider": "hubspot",
+    "enabled": false,
+    "description": "CRM integration for creating contacts from qualified leads",
+    "supported_providers": ["hubspot", "salesforce", "pipedrive", "zoho"]
+  },
+  "notifications": {
+    "url": "",
+    "provider": "slack",
+    "enabled": false,
+    "description": "Team notifications for new and hot leads",
+    "supported_providers": ["slack", "teams", "discord"]
+  },
+  "automation": {
+    "url": "",
+    "provider": "make",
+    "enabled": false,
+    "description": "Workflow automation for lead processing pipeline",
+    "supported_providers": ["make", "n8n", "zapier"]
+  }
+}
