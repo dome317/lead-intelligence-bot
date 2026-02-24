@@ -11,12 +11,6 @@
 
 ---
 
-## Demo
-
-> **Screenshot placeholder** — Add a screenshot or GIF of the chat widget and dashboard here.
-
----
-
 ## Features
 
 - **Conversational Lead Qualification** — AI agent asks qualifying questions naturally, not as a form
